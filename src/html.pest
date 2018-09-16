@@ -1,0 +1,94 @@
+html_document = {
+    scriptlet* ~ xml_declaration? ~ scriptlet* ~ dtd? ~ scriptlet* ~ html_element*
+}
+
+html_element = { 
+    ( tag_open ~ tag_name ~ html_attribute* ~ tag_close ~ html_content* ~ tag_open ~ tag_slash ~ tag_name ~ tag_close
+    | tag_open ~ tag_name ~ html_attribute* ~ tag_slash_close
+    | tag_open ~ tag_name ~ html_attribute* ~ tag_close
+    | scriptlet
+    | script
+    | style
+    )
+}
+
+html_content = { (html_text | cdata | html_comment | html_conditional_comment | html_element) }
+html_attribute = { html_attribute_name ~ (tag_equals ~ attribute_value)? }
+html_attribute_name = { tag_name }
+
+html_comment = @{ "<!--" ~ (!"-->" ~ any)* ~ "-->" }
+html_conditional_comment = @{ "<![" ~ (!"]>" ~ any)* ~ "]>" }
+xml_declaration = @{ "<?xml" ~ (!">" ~ any)* ~ ">" }
+cdata = { "<![CDATA[" ~ (!"]]>" ~ any)* ~ "]]>" }
+dtd = { "<!" ~ (!">" ~ any)* ~ ">" }
+scriptlet = { ("<?" ~ (!"?>" ~ any)* ~ "?>") | ("<%" ~ (!"%>" ~ any)* ~ "%>")}
+
+script = { script_open ~ script_body }
+script_open = { "<script" ~ (!">" ~ any)* ~ ">" }
+script_body = { (!"</script>" ~ any)* ~ "</script>" }
+script_short_body = { (!"</>" ~ any)* ~ "</>" }
+
+style = { style_open ~ style_body }
+style_open = { "<style" ~ (!">" ~ any)* ~ ">" }
+style_body = { (!"</style>" ~ any)* ~ "</style>" }
+
+tag_open = { "<" }
+tag_close = { ">" }
+
+html_text = @{ (!"<" ~ any)+ }
+
+tag_slash_close = { "/>" }
+tag_slash = { "/" }
+tag_equals = { "=" }
+
+tag_name = @{ tag_name_start_char ~ tag_name_char*}
+
+tag_name_start_char = {
+    ( ":"
+    | 'a'..'z'
+    | '\u{2070}'..'\u{218F}'
+    | '\u{2C00}'..'\u{2FEF}'
+    | '\u{3001}'..'\u{D7FF}'
+    | '\u{F900}'..'\u{FDCF}'
+    | '\u{FDF0}'..'\u{FFFD}'
+    )
+}
+
+tag_name_char = {
+    ( tag_name_start_char
+    | "-"
+    | "_"
+    | "."
+    | '0'..'9'
+    | "\u{00B7}"
+    | '\u{0300}'..'\u{036F}'
+    | '\u{203F}'..'\u{2040}'
+    )
+}
+
+attribute_value = @{
+    ( "\"" ~ (!"\"" ~ any)* ~ "\""
+    | "'" ~ (!"'" ~ any)* ~ "'"
+    | 'a'..'z'
+    | 'A'..'Z'
+    | '0'..'9'
+    | "-"
+    | "_"
+    | "."
+    | "/"
+    | "+"
+    | ","
+    | "?"
+    | "="
+    | ":"
+    | ";"
+    | "#"
+    | hex_chars
+    | dec_chars
+    )
+}
+
+hex_chars = @{ "#" ~ ( '0'..'9' | 'a'..'f' | 'A'..'F' )+ }
+dec_chars = @{ ('0'.. '9')+ ~ "%" }
+
+whitespace = _{ " " | "\t" | "\r" | "\n" }
