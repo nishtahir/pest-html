@@ -16,26 +16,26 @@ html_content = { (html_text | cdata | html_comment | html_conditional_comment | 
 html_attribute = { html_attribute_name ~ (tag_equals ~ attribute_value)? }
 html_attribute_name = { tag_name }
 
-html_comment = @{ "<!--" ~ (!"-->" ~ any)* ~ "-->" }
-html_conditional_comment = @{ "<![" ~ (!"]>" ~ any)* ~ "]>" }
-xml_declaration = @{ "<?xml" ~ (!">" ~ any)* ~ ">" }
-cdata = { "<![CDATA[" ~ (!"]]>" ~ any)* ~ "]]>" }
-dtd = { "<!" ~ (!">" ~ any)* ~ ">" }
-scriptlet = { ("<?" ~ (!"?>" ~ any)* ~ "?>") | ("<%" ~ (!"%>" ~ any)* ~ "%>")}
+html_comment = @{ "<!--" ~ (!"-->" ~ ANY)* ~ "-->" }
+html_conditional_comment = @{ "<![" ~ (!"]>" ~ ANY)* ~ "]>" }
+xml_declaration = @{ "<?xml" ~ (!">" ~ ANY)* ~ ">" }
+cdata = { "<![CDATA[" ~ (!"]]>" ~ ANY)* ~ "]]>" }
+dtd = { "<!" ~ (!">" ~ ANY)* ~ ">" }
+scriptlet = { ("<?" ~ (!"?>" ~ ANY)* ~ "?>") | ("<%" ~ (!"%>" ~ ANY)* ~ "%>")}
 
 script = { script_open ~ script_body }
-script_open = { "<script" ~ (!">" ~ any)* ~ ">" }
-script_body = { (!"</script>" ~ any)* ~ "</script>" }
-script_short_body = { (!"</>" ~ any)* ~ "</>" }
+script_open = { "<script" ~ (!">" ~ ANY)* ~ ">" }
+script_body = { (!"</script>" ~ ANY)* ~ "</script>" }
+script_short_body = { (!"</>" ~ ANY)* ~ "</>" }
 
 style = { style_open ~ style_body }
-style_open = { "<style" ~ (!">" ~ any)* ~ ">" }
-style_body = { (!"</style>" ~ any)* ~ "</style>" }
+style_open = { "<style" ~ (!">" ~ ANY)* ~ ">" }
+style_body = { (!"</style>" ~ ANY)* ~ "</style>" }
 
 tag_open = { "<" }
 tag_close = { ">" }
 
-html_text = @{ (!"<" ~ any)+ }
+html_text = @{ (!"<" ~ ANY)+ }
 
 tag_slash_close = { "/>" }
 tag_slash = { "/" }
@@ -67,8 +67,8 @@ tag_name_char = {
 }
 
 attribute_value = @{
-    ( "\"" ~ (!"\"" ~ any)* ~ "\""
-    | "'" ~ (!"'" ~ any)* ~ "'"
+    ( "\"" ~ (!"\"" ~ ANY)* ~ "\""
+    | "'" ~ (!"'" ~ ANY)* ~ "'"
     | 'a'..'z'
     | 'A'..'Z'
     | '0'..'9'
@@ -91,4 +91,4 @@ attribute_value = @{
 hex_chars = @{ "#" ~ ( '0'..'9' | 'a'..'f' | 'A'..'F' )+ }
 dec_chars = @{ ('0'.. '9')+ ~ "%" }
 
-whitespace = _{ " " | "\t" | "\r" | "\n" }
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }

@@ -21,7 +21,7 @@ mod tests {
                 panic!();
             }
             assert!(res.is_ok());
-            assert_eq!(res.unwrap().last().unwrap().into_span().end(), $input.len());
+            assert_eq!(res.unwrap().last().unwrap().as_span().end(), $input.len());
         };
     }
 

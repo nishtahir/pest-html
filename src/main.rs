@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate pest;
 #[macro_use]
 extern crate pest_derive;
@@ -10,9 +9,6 @@ use std::fs::File;
 use std::io::Read;
 
 mod parser;
-
-#[cfg(debug_assertions)]
-const _GRAMMAR: &'static str = include_str!("html.pest");
 
 fn main() {
     let mut unparsed_file = String::new();
